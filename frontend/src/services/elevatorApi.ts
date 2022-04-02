@@ -30,41 +30,33 @@ export const elevatorApi = createApi({
   tagTypes: ["ELEVATOR"],
   baseQuery: fetchBaseQuery({ baseUrl }),
   endpoints: (builder) => ({
-    /* queries */
+    /* --------- queries --------- */
     ping: builder.query<"pong", void>({ query: () => "/ping" }),
     building: builder.query<ElevatorApi["building"], void>({ query: () => "/building" }),
     elevators: builder.query<Array<ElevatorApi["elevator"]>, void>({
       query: () => "/elevators",
-      async onCacheEntryAdded(_, { updateCachedData, cacheDataLoaded, cacheEntryRemoved }) {
+      async onCacheEntryAdded(_, { updateCachedData, cacheDataLoaded, cacheEntryRemoved, getCacheEntry }) {
         const sse = new EventSource(`${baseUrl}/stream`);
-        try {
-          await cacheDataLoaded;
-          sse.onmessage = (e: MessageEvent<string>) => {
-            const updatedElevator: ElevatorApi["elevator"] = JSON.parse(e.data);
-            updateCachedData((elevatorsInCache) => updateElevatorInCache(elevatorsInCache, updatedElevator));
-          };
-        } catch (error) {
-          /*  */
-        }
+        await cacheDataLoaded;
+        sse.onmessage = (e: MessageEvent<string>) => {
+          const updatedElevator: ElevatorApi["elevator"] = JSON.parse(e.data);
+          updateCachedData((elevatorsInCache) => updateElevatorInCache(elevatorsInCache, updatedElevator));
+        };
         await cacheEntryRemoved;
         sse.close();
       },
     }),
-    /* mutations */
+    /* --------- mutations --------- */
     floor: builder.mutation<ElevatorApi["elevator"], number>({
       query: (floorNumber) => ({ url: `/floor/${floorNumber}`, method: "PUT" }),
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         /* Pessimistic Updates */
-        try {
-          const { data: updatedElevator } = await queryFulfilled;
-          dispatch(
-            elevatorApi.util.updateQueryData("elevators", undefined, (elevatorsInCache) =>
-              updateElevatorInCache(elevatorsInCache, updatedElevator)
-            )
-          );
-        } catch {
-          /*  */
-        }
+        const { data: updatedElevator } = await queryFulfilled;
+        dispatch(
+          elevatorApi.util.updateQueryData("elevators", undefined, (elevatorsInCache) => {
+            return updateElevatorInCache(elevatorsInCache, updatedElevator);
+          })
+        );
       },
     }),
   }),

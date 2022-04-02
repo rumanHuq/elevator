@@ -23,7 +23,8 @@
   ],
   "stylelint.validate": [
     "css",
-    "scss"
+    "scss",
+    "typescriptreact"
   ],
   "less.validate": false,
   "scss.validate": false,

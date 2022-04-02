@@ -1,15 +1,19 @@
 import "normalize.css";
 import { StrictMode } from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
-import { Main } from "./components/Main/Main";
+import { App } from "./components/App/App";
 import { store } from "./store";
 
-ReactDOM.render(
-  <StrictMode>
-    <Provider store={store}>
-      <Main />
-    </Provider>
-  </StrictMode>,
-  document.getElementById("root")
-);
+const container = document.getElementById("root");
+
+if (container) {
+  const root = createRoot(container);
+  root.render(
+    <StrictMode>
+      <Provider store={store}>
+        <App />
+      </Provider>
+    </StrictMode>
+  );
+}

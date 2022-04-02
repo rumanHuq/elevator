@@ -31,7 +31,7 @@ app.get("/elevators", (req, res) => {
   res.send(elevatorController.elevators);
 });
 /* https://github.com/dpskvn/express-sse/pull/38 */
-app.get("/stream", (_,res,next)=>{ res.flush = () => undefined; next() },sse.init);
+app.get("/stream", (_,res,next)=>{ res.flush = () => undefined; next() }, sse.init);
 
 app.use("/", (req, res) => {
   res.status(404).send({ error: "Resource not found" });
