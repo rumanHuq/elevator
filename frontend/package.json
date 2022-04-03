@@ -72,7 +72,8 @@
     "prebuild": "tsc && npm run lint:fix",
     "preview": "vite preview",
     "start": "vite",
-    "test": "jest"
+    "test": "jest",
+    "e2e": "cypress open"
   },
   "version": "0.0.0"
 }

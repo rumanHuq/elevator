@@ -5,7 +5,8 @@
     "backend"
   ],
   "scripts": {
-    "start": "run-p \"start --workspace=frontend\" \"start --workspace=backend\""
+    "start": "run-p \"start --workspace=frontend\" \"start --workspace=backend\"",
+    "e2e": "npm run e2e --workspace=frontend"
   },
   "devDependencies": {
     "npm-run-all": "^4.1.5"

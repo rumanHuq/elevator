@@ -13,10 +13,9 @@ export interface ElevatorApi {
   };
 }
 
-function updateElevatorInCache(
-  elevatorsInCache: Array<ElevatorApi["elevator"]>,
-  updatedElevator: ElevatorApi["elevator"]
-) {
+type Elevator = ElevatorApi["elevator"];
+
+function updateElevatorInCache(elevatorsInCache: Array<Elevator>, updatedElevator: Elevator) {
   const toUpdateIdx = elevatorsInCache.findIndex((elevator) => elevator.id === updatedElevator.id);
   if (toUpdateIdx === -1) {
     return elevatorsInCache;
@@ -34,13 +33,13 @@ export const elevatorApi = createApi({
     /* --------- queries --------- */
     ping: builder.query<"pong", void>({ query: () => "/ping" }),
     building: builder.query<ElevatorApi["building"], void>({ query: () => "/building" }),
-    elevators: builder.query<Array<ElevatorApi["elevator"]>, void>({
+    elevators: builder.query<Array<Elevator>, void>({
       query: () => "/elevators",
       async onCacheEntryAdded(_, { updateCachedData, cacheDataLoaded, cacheEntryRemoved }) {
         const sse = new EventSource(`${baseUrl}/stream`);
         await cacheDataLoaded;
         sse.onmessage = (e: MessageEvent<string>) => {
-          const updatedElevator: ElevatorApi["elevator"] = JSON.parse(e.data);
+          const updatedElevator: Elevator = JSON.parse(e.data);
           updateCachedData((elevatorsInCache) => updateElevatorInCache(elevatorsInCache, updatedElevator));
         };
         await cacheEntryRemoved;
@@ -48,7 +47,7 @@ export const elevatorApi = createApi({
       },
     }),
     /* --------- mutations --------- */
-    floor: builder.mutation<ElevatorApi["elevator"], number>({
+    floor: builder.mutation<Elevator, number>({
       query: (floorNumber) => ({ url: `/floor/${floorNumber}`, method: "PUT" }),
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         /* Pessimistic Updates */
