@@ -1,6 +1,33 @@
+import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { ElevatorApi, useElevatorsQuery, useFloorMutation } from "@/services/elevatorApi";
 import { Button } from "../Button/Button";
+
+interface FloorProps {
+  elevators: number;
+  floor: number;
+}
+
+interface GetBackgroundColor {
+  inCurrentFloor: boolean;
+  state?: ElevatorApi["elevator"]["state"];
+}
+
+function getBackgroundProperties({ inCurrentFloor, state }: GetBackgroundColor) {
+  if (state === "stopped" && inCurrentFloor)
+    return css`
+      background-image: url(/lift_open.png);
+      background-size: cover;
+    `;
+  if (state !== "stopped" && inCurrentFloor)
+    return css`
+      background-image: url(/lift_closed.png);
+      background-size: cover;
+    `;
+  return css`
+    background-color: #4d7298;
+  `;
+}
 
 const FloorWrapper = styled.div`
   flex: 1;
@@ -10,27 +37,11 @@ const FloorWrapper = styled.div`
   gap: 0.5rem;
 `;
 
-interface GetBackgroundColor {
-  inCurrentFloor: boolean;
-  state?: ElevatorApi["elevator"]["state"];
-}
-
-function getBackgroundProperties({ inCurrentFloor, state }: GetBackgroundColor) {
-  if (state === "stopped" && inCurrentFloor) return "background-image: url(/lift_open.png); background-size: cover";
-  if (state !== "stopped" && inCurrentFloor) return "background-image: url(/lift_closed.png); background-size: cover";
-  return "background-color: #4D7298";
-}
-
 const ElevatorWrapper = styled.div<GetBackgroundColor>`
-  ${getBackgroundProperties};
+  ${getBackgroundProperties}
   height: 98%;
   flex: 1;
 `;
-
-interface FloorProps {
-  elevators: number;
-  floor: number;
-}
 
 export const Floor = ({ floor, elevators }: FloorProps) => {
   const { data } = useElevatorsQuery();

@@ -35,7 +35,7 @@ export const elevatorApi = createApi({
     building: builder.query<ElevatorApi["building"], void>({ query: () => "/building" }),
     elevators: builder.query<Array<ElevatorApi["elevator"]>, void>({
       query: () => "/elevators",
-      async onCacheEntryAdded(_, { updateCachedData, cacheDataLoaded, cacheEntryRemoved, getCacheEntry }) {
+      async onCacheEntryAdded(_, { updateCachedData, cacheDataLoaded, cacheEntryRemoved }) {
         const sse = new EventSource(`${baseUrl}/stream`);
         await cacheDataLoaded;
         sse.onmessage = (e: MessageEvent<string>) => {
