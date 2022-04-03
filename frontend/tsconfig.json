@@ -1,5 +1,4 @@
 {
-  "extends": "../tsconfig.json",
   "compilerOptions": {
     "allowJs": false,
     "allowSyntheticDefaultImports": true,
@@ -33,12 +32,15 @@
     "strict": true,
     "target": "ESNext"
   },
+  "extends": "../tsconfig.json",
   "include": [
     ".eslintrc.js",
     "vite.config.ts",
     "jest-setup.ts",
     "*.js",
     "src/**/*.ts",
-    "src/**/*.tsx"
+    "src/**/*.tsx",
+    "cypress/**/*.ts",
+    "cypress/**/*.js"
   ]
 }

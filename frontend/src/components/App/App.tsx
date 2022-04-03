@@ -1,19 +1,6 @@
-import styled from "@emotion/styled";
 import { Floor } from "@/components/Floor/Floor";
 import { useBuildingQuery } from "@/services/elevatorApi";
-
-const BuildingWrapper = styled.div`
-  width: 100%;
-  height: 100vh;
-  max-width: 300px;
-  margin: auto;
-  background-color: #591f0a;
-  box-sizing: border-box;
-  padding: 0.5rem;
-  display: flex;
-  flex-direction: column-reverse;
-  gap: 0.25rem;
-`;
+import { BuildingWrapper } from "./App.styles";
 
 export const App = () => {
   const { data, error, isLoading } = useBuildingQuery();
@@ -27,7 +14,7 @@ export const App = () => {
   if (!data) return null;
   const { elevators, floors } = data;
   return (
-    <BuildingWrapper>
+    <BuildingWrapper data-testId="building">
       {Array(floors)
         .fill(null)
         .map((_, floor) => (

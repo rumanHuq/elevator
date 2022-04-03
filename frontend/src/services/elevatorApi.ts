@@ -18,11 +18,12 @@ function updateElevatorInCache(
   updatedElevator: ElevatorApi["elevator"]
 ) {
   const toUpdateIdx = elevatorsInCache.findIndex((elevator) => elevator.id === updatedElevator.id);
-  if (toUpdateIdx !== -1) {
-    const updatedElevators = [...elevatorsInCache];
-    updatedElevators[toUpdateIdx] = updatedElevator;
-    Object.assign(elevatorsInCache, updatedElevators);
+  if (toUpdateIdx === -1) {
+    return elevatorsInCache;
   }
+  const updatedElevators = Array.from(elevatorsInCache);
+  updatedElevators[toUpdateIdx] = updatedElevator;
+  return Object.assign(elevatorsInCache, updatedElevators);
 }
 const baseUrl = "http://localhost:8080";
 export const elevatorApi = createApi({
